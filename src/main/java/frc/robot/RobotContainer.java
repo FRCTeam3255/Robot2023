@@ -77,7 +77,7 @@ public class RobotContainer {
 
     // Auto drive
 
-    // Defense mode
+    // Defense mode (along with rumble)
 
     // Snap the wheels forward
 
@@ -87,23 +87,16 @@ public class RobotContainer {
 
     // Snap the wheels down
 
-    // Toggle between orientation
-    conDriver.btn_LBump
-        .onTrue(Commands.runOnce(() -> subDrivetrain.toggleOrientation())
-            .alongWith(Commands.runOnce(() -> conDriver.setRumble(RumbleType.kBothRumble, 0.5))));
-
     // "reset gyro" for field relative but actually resets the orientation at a
     // higher level
     conDriver.btn_Back
         .onTrue(Commands.runOnce(
             () -> subDrivetrain.resetPose(new Pose2d(subDrivetrain.getPose().getTranslation(), new Rotation2d(0)))));
-    conDriver.btn_B
-        .onTrue(Commands.runOnce(
-            () -> subDrivetrain.resetPose(new Pose2d())));
 
     // while true do robot oriented, default to field oriented
     conDriver.btn_LeftBumper
-        .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative()))
+        .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative())
+            .alongWith(Commands.runOnce(() -> conDriver.setRumble(RumbleType.kBothRumble, 0.5))))
         .onFalse(Commands.runOnce(() -> subDrivetrain.setFieldRelative()));
 
     // Operator

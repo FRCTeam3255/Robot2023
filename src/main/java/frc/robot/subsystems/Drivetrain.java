@@ -286,14 +286,6 @@ public class Drivetrain extends SubsystemBase {
     isFieldRelative = false;
   }
 
-  public void toggleOrientation() {
-    if (isFieldRelative == true) {
-      setRobotRelative();
-    } else if (isFieldRelative == false) {
-      setFieldRelative();
-    }
-  }
-
   public void resetPID() {
     xPID.reset(getPose().getX());
     yPID.reset(getPose().getY());
