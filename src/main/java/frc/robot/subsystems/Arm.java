@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.constArm;
+import frc.robot.Constants.constControllers.ScoringColumn;
+import frc.robot.Constants.constControllers.ScoringLevel;
+import frc.robot.Constants.constVision.GamePiece;
 import frc.robot.RobotMap.mapArm;
 import frc.robot.RobotPreferences.prefArm;
 
@@ -35,6 +38,10 @@ public class Arm extends SubsystemBase {
 
   ProfiledPIDController shoulderPID;
   ProfiledPIDController elbowPID;
+
+  public GamePiece desiredGamePiece = GamePiece.NONE;
+  public ScoringLevel scoringLevel = ScoringLevel.NONE;
+  public ScoringColumn scoringColumn = ScoringColumn.NONE;
 
   public Arm() {
     shoulderJoint = new SN_CANSparkMax(mapArm.SHOULDER_CAN);
@@ -117,21 +124,11 @@ public class Arm extends SubsystemBase {
   }
 
   /**
-   * Set the rotational positions of the shoulder and elbow joints.
-   * 
-   * @param shoulderAngle Shoulder position in degrees
-   * @param elbowAngle    Elbow position in degrees
-   */
-  public void setJointPositions(SN_DoublePreference shoulderAngle, SN_DoublePreference elbowAngle) {
-    setJointPositions(Rotation2d.fromDegrees(shoulderAngle.getValue()), Rotation2d.fromDegrees(elbowAngle.getValue()));
-  }
-
-  /**
    * Set the rotational position of the shoulder joint.
    * 
    * @param position Rotational position to set shoulder
    */
-  public void setShoulderPosition(Rotation2d position) {
+  private void setShoulderPosition(Rotation2d position) {
     double radians = MathUtil.clamp(
         position.getRadians(),
         constArm.SHOULDER_REVERSE_LIMIT,
@@ -146,7 +143,7 @@ public class Arm extends SubsystemBase {
    * 
    * @param degrees Rotational position to set elbow
    */
-  public void setElbowPosition(Rotation2d position) {
+  private void setElbowPosition(Rotation2d position) {
     double radians = MathUtil.clamp(
         position.getRadians(),
         constArm.ELBOW_REVERSE_LIMIT,
@@ -254,7 +251,7 @@ public class Arm extends SubsystemBase {
    * 
    * @return Position of of arm tip in meters
    */
-  public Translation2d getArmTipPosition() {
+  private Translation2d getArmTipPosition() {
     double a1 = constArm.SHOULDER_LENGTH;
     double a2 = constArm.ELBOW_LENGTH;
 
@@ -313,6 +310,10 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putString("desiredGamePiece", desiredGamePiece.toString());
+    SmartDashboard.putString("scoringLevel", scoringLevel.toString());
+    SmartDashboard.putString("scoringColumn", scoringColumn.toString());
 
     if (Constants.OUTPUT_DEBUG_VALUES) {
       SmartDashboard.putNumber("Arm Shoulder Absolute Encoder Raw", shoulderEncoder.getAbsolutePosition());
