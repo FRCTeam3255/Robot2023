@@ -94,10 +94,18 @@ public class RobotContainer {
             () -> subDrivetrain.resetPose(new Pose2d(subDrivetrain.getPose().getTranslation(), new Rotation2d(0)))));
 
     // while true do robot oriented, default to field oriented
+    // conDriver.btn_LeftBumper
+    // .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative())
+    // .alongWith(Commands.runOnce(() -> conDriver.setRumble(RumbleType.kBothRumble,
+    // 0.5))))
+    // .onFalse(Commands.runOnce(() -> subDrivetrain.setFieldRelative()));
     conDriver.btn_LeftBumper
-        .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative())
-            .alongWith(Commands.runOnce(() -> conDriver.setRumble(RumbleType.kBothRumble, 0.5))))
+        .whileTrue(Commands.runOnce(() -> subDrivetrain.setRobotRelative()))
         .onFalse(Commands.runOnce(() -> subDrivetrain.setFieldRelative()));
+
+    conDriver.btn_LeftBumper
+        .onTrue(Commands.runOnce(() -> conDriver.setRumble(RumbleType.kBothRumble, 0.5)))
+        .onFalse(Commands.runOnce(() -> conDriver.setRumble(RumbleType.kBothRumble, 0)));
 
     // Operator
 
