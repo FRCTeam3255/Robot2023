@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.frcteam3255.joystick.SN_XboxController;
+import com.frcteam3255.components.SN_Blinkin.PatternType;
 import com.frcteam3255.joystick.SN_SwitchboardStick;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -14,8 +15,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
+import frc.robot.subsystems.Rumble;
 import frc.robot.subsystems.Vision;
 import frc.robot.Constants.constControllers;
+import frc.robot.Constants.constLEDs;
 import frc.robot.Constants.constArm.ArmState;
 import frc.robot.RobotMap.mapControllers;
 import frc.robot.commands.AddVisionMeasurement;
@@ -40,9 +43,10 @@ public class RobotContainer {
   private final SN_SwitchboardStick conSwitchboard = new SN_SwitchboardStick(mapControllers.SWITCHBOARD_USB);
   private final SN_SwitchboardStick conNumpad = new SN_SwitchboardStick(mapControllers.NUMPAD_USB);
 
+  private final Rumble subRumble = new Rumble(conDriver, conOperator);
   private final Drivetrain subDrivetrain = new Drivetrain();
   private final Arm subArm = new Arm();
-  private final Intake subIntake = new Intake();
+  private final Intake subIntake = new Intake(subRumble);
   // private final Collector subCollector = new Collector();
   private final Vision subVision = new Vision();
   private final LEDs subLEDs = new LEDs();
@@ -109,6 +113,7 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> subDrivetrain.setFieldRelative()));
 
     conDriver.btn_RightBumper.whileTrue(Commands.run(() -> subDrivetrain.setDefenseMode(), subDrivetrain));
+    conDriver.btn_RightBumper.whileTrue(Commands.run(() -> subLEDs.setLEDPattern(constLEDs.DEFENSE_MODE_COLOR)));
 
     // Operator
 
